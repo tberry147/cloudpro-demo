@@ -28,7 +28,7 @@ resource "aws_route_table" "cloudpros_rt" {
   vpc_id = aws_vpc.cloudpros_vpc.id
 
   route {
-    cidr_block = var.rt_cidr
+    cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw.id
   }
 
@@ -39,13 +39,22 @@ resource "aws_route_table" "cloudpros_rt" {
 
 #route table association
 resource "aws_route_table_association" "rt_association" {
-  gateway_id     = aws_internet_gateway.igw.id
+  subnet_id = aws_subnet.pub.id
   route_table_id = aws_route_table.cloudpros_rt.id
+
+}
+
+resource "aws_eip" "eip" {
+    vpc        = true
+  depends_on = [aws_internet_gateway.igw]
 
 }
 
 resource "aws_nat_gateway" "mynatgw" {
   subnet_id     = aws_subnet.pub.id
+  allocation_id = aws_eip.eip.id
+
+  depends_on = [aws_internet_gateway.igw]
 
 }
 
