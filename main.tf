@@ -10,17 +10,18 @@ resource "aws_internet_gateway" "igw" {
 
 }
 
-resource "aws_subnet" "pub"{
-    vpc_id = local.vpc_id
-     map_public_ip_on_launch = true
-     cidr_block = var.pub_cidr
+resource "aws_subnet" "pub" {
+  vpc_id                  = local.vpc_id
+  availability_zone       = "us-east-1a"
+  map_public_ip_on_launch = true
+  cidr_block              = var.pub_cidr
 
-  }
+}
 
-  resource "aws_subnet" "priv_subnet" {
-  vpc_id            = local.vpc_id
-  cidr_block        = var.private_subnet_cidr
-  
+resource "aws_subnet" "priv_subnet" {
+  vpc_id     = local.vpc_id
+  cidr_block = var.private_subnet_cidr
+
 }
 
 #route table
@@ -39,13 +40,13 @@ resource "aws_route_table" "cloudpros_rt" {
 
 #route table association
 resource "aws_route_table_association" "rt_association" {
-  subnet_id = aws_subnet.pub.id
+  subnet_id      = aws_subnet.pub.id
   route_table_id = aws_route_table.cloudpros_rt.id
 
 }
 
 resource "aws_eip" "eip" {
-    vpc        = true
+  vpc        = true
   depends_on = [aws_internet_gateway.igw]
 
 }
