@@ -17,7 +17,7 @@ resource "aws_subnet" "pub"{
 
   }
 
-  resource "aws_subnet" "priv_subnet" {
+  resource "aws_subnet" "priv_subnet"{
   vpc_id            = local.vpc_id
   cidr_block        = var.private_subnet_cidr
   
